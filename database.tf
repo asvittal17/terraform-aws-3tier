@@ -2,9 +2,9 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   name = "my-db-subnet-group"
 
   subnet_ids = [
-  aws_subnet.private_subnet.id,
-  aws_subnet.private_subnet_2.id
-]
+    aws_subnet.private_subnet.id,
+    aws_subnet.private_subnet_2.id
+  ]
 
   tags = {
     Name = "DBSubnetGroup"
@@ -14,12 +14,12 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 resource "aws_db_instance" "db" {
   identifier = "mydatabase"
 
-  engine         = "mysql"
-  instance_class = "db.t3.micro"
+  engine            = "mysql"
+  instance_class    = "db.t3.micro"
   allocated_storage = 20
 
-  username = "admin"
-  password = "Admin1234"
+  username = var.db_username
+  password = var.db_password
 
   db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
 

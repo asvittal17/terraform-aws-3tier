@@ -1,27 +1,3 @@
-resource "aws_instance" "web" {
-  ami           = "ami-0f5ee92e2d63afc18"
-  instance_type = "t2.micro"
-
-  subnet_id              = aws_subnet.public_subnet.id
-  vpc_security_group_ids = [aws_security_group.web_sg.id]
-
-  associate_public_ip_address = true
-
-  key_name = var.key_name
-
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              
-              # Install Python and pip
-              yum install -y python3 python3-pip
-              
-              # Install Flask
-              pip3 install flask flask-cors
-              
-              # Create backend directory and app
-              mkdir -p /var/www/html/api
-              cat > /var/www/html/api/app.py << 'PYEOF'
 import sqlite3
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -80,20 +56,3 @@ def health():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
-PYEOF
-              
-              # Start Flask API in background
-              nohup python3 /var/www/html/api/app.py > /var/log/flask.log 2>&1 &
-              
-              # Install and configure Apache
-              yum install httpd -y
-              systemctl start httpd
-              systemctl enable httpd
-              
-              echo "API and Web Server configured successfully"
-              EOF
-
-  tags = {
-    Name = "Terraform-WebServer"
-  }
-}

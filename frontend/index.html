@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker App | 3-Tier Cloud Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 119, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 255, 200, 0.05) 0%, transparent 30%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88, #00d9ff);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 136, 0.1) 100%);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00d9ff, transparent);
+            border-radius: 2px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .config-section {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+            padding: 25px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .config-section label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .config-section input {
+            flex: 1;
+            min-width: 180px;
+            padding: 14px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .config-section input:focus {
+            outline: none;
+            border-color: #00d9ff;
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .config-section input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .config-section small {
+            width: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .message {
+            padding: 18px 40px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.1) 100%);
+            color: #00ff88;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(255, 107, 107, 0.1) 100%);
+            color: #ff6b6b;
+            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.5), transparent);
+        }
+
+        .section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #00d9ff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d9ff;
+            background: rgba(0, 217, 255, 0.08);
+            box-shadow: 
+                0 0 25px rgba(0, 217, 255, 0.15),
+                inset 0 0 20px rgba(0, 217, 255, 0.05);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #00d9ff 0%, #00c4ff 100%);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(0, 217, 255, 0.35),
+                0 0 30px rgba(0, 217, 255, 0.2);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 25px;
+        }
+
+        button.secondary:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2) 0%, rgba(0, 255, 136, 0.15) 100%);
+            color: #00d9ff;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        td {
+            padding: 14px 16px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 217, 255, 0.08);
+        }
+
+        .no-data {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 40px;
+            font-style: italic;
+        }
+
+        footer {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .architecture-info h3 {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tiers {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tier {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 136, 0.1) 100%);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            font-weight: 500;
+        }
+
+        .tier-icon {
+            margin-right: 8px;
+        }
+
+        .arrow {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+            header {
+                padding: 30px 20px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
+            .config-section, .main-content, footer {
+                padding: 20px;
+            }
+            .section {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fitness Tracker App</h1>
+            <p class="subtitle">3-Tier Cloud Architecture Project</p>
+        </header>
+
+        <div class="config-section">
+            <label>EC2 Public IP:</label>
+            <input type="text" id="apiIP" placeholder="e.g., 13.232.45.67">
+            <small>Enter your EC2 instance public IP address</small>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div class="main-content">
+            <div class="section">
+                <h2>Add Workout</h2>
+                <form id="workoutForm">
+                    <div class="form-group">
+                        <label>Workout Type</label>
+                        <input type="text" id="workoutType" placeholder="e.g., Running, Gym, Cycling" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (minutes)</label>
+                        <input type="number" id="duration" placeholder="e.g., 30" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Calories Burned</label>
+                        <input type="number" id="calories" placeholder="e.g., 300" required>
+                    </div>
+                    <button type="submit" id="submitBtn">Add Workout</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>View Workouts</h2>
+                <button onclick="loadWorkouts()" id="loadBtn" class="secondary">Load Workouts</button>
+                <table id="workoutTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Duration</th>
+                            <th>Calories</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workoutBody"></tbody>
+                </table>
+                <p id="noData" class="no-data">No workouts found. Click "Load Workouts" to fetch data.</p>
+            </div>
+        </div>
+
+        <footer>
+            <div class="architecture-info">
+                <h3>3-Tier Cloud Architecture</h3>
+                <div class="tiers">
+                    <span class="tier"><span class="tier-icon">🌐</span>Frontend</span>
+                    <span class="arrow">→</span>
+                    <span class="tier"><span class="tier-icon">⚙️</span>Backend</span>
+                    <span class="arrow">→</span>
+                    <span class="tier"><span class="tier-icon">🗄️</span>Database</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let workouts = [];
+
+        function showMessage(msg, isSuccess) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = 'message show ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                msgDiv.className = 'message';
+            }, 5000);
+        }
+
+        function getApiIP() {
+            const ip = document.getElementById('apiIP').value.trim();
+            if (!ip) {
+                showMessage('Please enter the EC2 Public IP first!', false);
+                return null;
+            }
+            return ip;
+        }
+
+        async function addWorkout(e) {
+            e.preventDefault();
+            const apiIP = getApiIP();
+            if (!apiIP) return;
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Adding...';
+
+            const data = {
+                workout_type: document.getElementById("workoutType").value,
+                duration: document.getElementById('duration').value,
+                calories: document.getElementById('calories').value
+            };
+
+            try {
+                const response = await fetch('http://' + apiIP + ':5000/api/workouts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    showMessage('Workout added successfully!', true);
+                    document.getElementById('workoutForm').reset();
+                    loadWorkouts();
+                } else {
+                    showMessage('Failed to add workout', false);
+                }
+            } catch (error) {
+                showMessage('Error connecting to backend. Make sure EC2 is running.', false);
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Add Workout';
+        }
+
+        async function loadWorkouts() {
+            const apiIP = getApiIP();
+            if (!apiIP) return;
+
+            const btn = document.getElementById('loadBtn');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const response = await fetch('http://' + apiIP + ':5000/api/workouts');
+                workouts = await response.json();
+                
+                const tbody = document.getElementById('workoutBody');
+                const table = document.getElementById('workoutTable');
+                const noData = document.getElementById('noData');
+                
+                tbody.innerHTML = '';
+                if (workouts.length > 0) {
+                    workouts.forEach(w => {
+                        const row = tbody.insertRow();
+                        row.insertCell(0).textContent = w.workout_type;
+                        row.insertCell(1).textContent = w.duration + ' min';
+                        row.insertCell(2).textContent = w.calories + ' kcal';
+                    });
+                    table.style.display = 'table';
+                    noData.style.display = 'none';
+                } else {
+                    table.style.display = 'none';
+                    noData.style.display = 'block';
+                }
+            } catch (error) {
+                showMessage('Error loading workouts. Make sure EC2 is running.', false);
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Load Workouts';
+        }
+
+        document.getElementById('workoutForm').addEventListener('submit', addWorkout);
+    </script>
+</body>
+</html>
