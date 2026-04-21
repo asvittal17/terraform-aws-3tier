@@ -3,600 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Tracker App | 3-Tier Cloud Project</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            padding: 30px 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 119, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 255, 200, 0.05) 0%, transparent 30%);
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #00d9ff, #00ff88, #00d9ff);
-            background-size: 200% 100%;
-            animation: shimmer 3s linear infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        header {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 136, 0.1) 100%);
-            padding: 40px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #00d9ff, transparent);
-            border-radius: 2px;
-        }
-
-        header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            font-weight: 400;
-        }
-
-        .config-section {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
-            padding: 25px 40px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .config-section label {
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            white-space: nowrap;
-            font-size: 14px;
-        }
-
-        .config-section input {
-            flex: 1;
-            min-width: 180px;
-            padding: 14px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            font-size: 15px;
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .config-section input:focus {
-            outline: none;
-            border-color: #00d9ff;
-            background: rgba(0, 217, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
-        }
-
-        .config-section input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .config-section small {
-            width: 100%;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .message {
-            padding: 18px 40px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 255, 136, 0.1) 100%);
-            color: #00ff88;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .message.error {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(255, 107, 107, 0.1) 100%);
-            color: #ff6b6b;
-            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .section {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            padding: 35px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.5), transparent);
-        }
-
-        .section h2 {
-            font-size: 20px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section h2::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #00d9ff;
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0, 217, 255, 0.8);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 16px 18px;
-            border: 2px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            font-size: 15px;
-            background: rgba(0, 0, 0, 0.25);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #00d9ff;
-            background: rgba(0, 217, 255, 0.08);
-            box-shadow: 
-                0 0 25px rgba(0, 217, 255, 0.15),
-                inset 0 0 20px rgba(0, 217, 255, 0.05);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.35);
-        }
-
-        button {
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #00d9ff 0%, #00c4ff 100%);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        button:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 15px 35px rgba(0, 217, 255, 0.35),
-                0 0 30px rgba(0, 217, 255, 0.2);
-        }
-
-        button:active:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        button.secondary {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 25px;
-        }
-
-        button.secondary:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        th {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2) 0%, rgba(0, 255, 136, 0.15) 100%);
-            color: #00d9ff;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 16px;
-            text-align: left;
-            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        td {
-            padding: 14px 16px;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr {
-            transition: background 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background: rgba(0, 217, 255, 0.08);
-        }
-
-        .no-data {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.4);
-            padding: 40px;
-            font-style: italic;
-        }
-
-        footer {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
-            padding: 30px 40px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .architecture-info h3 {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 20px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .tiers {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .tier {
-            background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(0, 255, 136, 0.1) 100%);
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            font-weight: 500;
-        }
-
-        .tier-icon {
-            margin-right: 8px;
-        }
-
-        .arrow {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 18px;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                border-radius: 0;
-            }
-            header {
-                padding: 30px 20px;
-            }
-            header h1 {
-                font-size: 24px;
-            }
-            .config-section, .main-content, footer {
-                padding: 20px;
-            }
-            .section {
-                padding: 25px 20px;
-            }
-        }
-    </style>
+    <title>Fitness Tracker | 3-Tier Cloud Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Fitness Tracker App</h1>
-            <p class="subtitle">3-Tier Cloud Architecture Project</p>
-        </header>
-
-        <div class="config-section">
-            <label>EC2 Public IP:</label>
-            <input type="text" id="apiIP" placeholder="e.g., 13.232.45.67">
-            <small>Enter your EC2 instance public IP address</small>
-        </div>
-
-        <div id="message" class="message"></div>
-
-        <div class="main-content">
-            <div class="section">
-                <h2>Add Workout</h2>
-                <form id="workoutForm">
-                    <div class="form-group">
-                        <label>Workout Type</label>
-                        <input type="text" id="workoutType" placeholder="e.g., Running, Gym, Cycling" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Duration (minutes)</label>
-                        <input type="number" id="duration" placeholder="e.g., 30" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Calories Burned</label>
-                        <input type="number" id="calories" placeholder="e.g., 300" required>
-                    </div>
-                    <button type="submit" id="submitBtn">Add Workout</button>
-                </form>
-            </div>
-
-            <div class="section">
-                <h2>View Workouts</h2>
-                <button onclick="loadWorkouts()" id="loadBtn" class="secondary">Load Workouts</button>
-                <table id="workoutTable">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Duration</th>
-                            <th>Calories</th>
-                        </tr>
-                    </thead>
-                    <tbody id="workoutBody"></tbody>
-                </table>
-                <p id="noData" class="no-data">No workouts found. Click "Load Workouts" to fetch data.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🏋️</span>
+                <span class="logo-text">FitTrack</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#app">App</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
+    </nav>
 
-        <footer>
-            <div class="architecture-info">
-                <h3>3-Tier Cloud Architecture</h3>
-                <div class="tiers">
-                    <span class="tier"><span class="tier-icon">🌐</span>Frontend</span>
-                    <span class="arrow">→</span>
-                    <span class="tier"><span class="tier-icon">⚙️</span>Backend</span>
-                    <span class="arrow">→</span>
-                    <span class="tier"><span class="tier-icon">🗄️</span>Database</span>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-shape hero-shape-1"></div>
+            <div class="hero-shape hero-shape-2"></div>
+            <div class="hero-shape hero-shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                3-Tier Cloud Architecture
+            </div>
+            <h1 class="hero-title">
+                Track Your <span class="gradient-text">Fitness</span><br>
+                Journey in the Cloud
+            </h1>
+            <p class="hero-subtitle">
+                A modern full-stack application showcasing cloud computing with AWS, 
+                Terraform, Flask, and React. Track workouts, monitor progress, 
+                achieve your goals.
+            </p>
+            <div class="hero-buttons">
+                <a href="#app" class="btn btn-primary">
+                    <span>Get Started</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#architecture" class="btn btn-secondary">Learn More</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Tier Architecture</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Cloud Based</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">IaC</span>
+                    <span class="stat-label">Terraform</span>
                 </div>
             </div>
-        </footer>
-    </div>
+        </div>
+    </section>
 
-    <script>
-        let workouts = [];
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Features</span>
+                <h2 class="section-title">Built with Modern Technology</h2>
+                <p class="section-subtitle">A complete cloud-based solution demonstrating enterprise-grade architecture</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                    </div>
+                    <h3 class="feature-title">AWS Cloud</h3>
+                    <p class="feature-description">Deployed on Amazon Web Services with VPC, Subnets, EC2, and RDS for enterprise-grade reliability.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="feature-title">3-Tier Security</h3>
+                    <p class="feature-description">Presentation, Application, and Data layers properly isolated with security groups and private subnets.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                    </div>
+                    <h3 class="feature-title">Infrastructure as Code</h3>
+                    <p class="feature-description">Terraform configuration for reproducible, version-controlled infrastructure deployment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <h3 class="feature-title">RESTful API</h3>
+                    <p class="feature-description">Flask backend with clean API endpoints for data management and operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        function showMessage(msg, isSuccess) {
-            const msgDiv = document.getElementById('message');
-            msgDiv.textContent = msg;
-            msgDiv.className = 'message show ' + (isSuccess ? 'success' : 'error');
-            setTimeout(() => {
-                msgDiv.className = 'message';
-            }, 5000);
-        }
+    <!-- App Section -->
+    <section id="app" class="app-section">
+        <div class="container">
+            <div class="app-grid">
+                <!-- IP Configuration -->
+                <div class="config-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <h3>Connect to Backend</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="apiIP">EC2 Public IP Address</label>
+                        <input type="text" id="apiIP" placeholder="13.202.142.27">
+                    </div>
+                    <small class="input-hint">Enter your EC2 instance public IP address</small>
+                </div>
 
-        function getApiIP() {
-            const ip = document.getElementById('apiIP').value.trim();
-            if (!ip) {
-                showMessage('Please enter the EC2 Public IP first!', false);
-                return null;
-            }
-            return ip;
-        }
+                <!-- Add Workout Form -->
+                <div class="app-card">
+                    <div class="card-header">
+                        <div class="card-icon add">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </div>
+                        <h3>Add Workout</h3>
+                    </div>
+                    <form id="workoutForm">
+                        <div class="form-group">
+                            <label for="workoutType">Workout Type</label>
+                            <input type="text" id="workoutType" placeholder="Running, Gym, Cycling..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (minutes)</label>
+                            <input type="number" id="duration" placeholder="30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="calories">Calories Burned</label>
+                            <input type="number" id="calories" placeholder="300" required>
+                        </div>
+                        <button type="submit" id="submitBtn" class="btn-submit">
+                            <span>Add Workout</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </form>
+                </div>
 
-        async function addWorkout(e) {
-            e.preventDefault();
-            const apiIP = getApiIP();
-            if (!apiIP) return;
+                <!-- View Workouts -->
+                <div class="app-card">
+                    <div class="card-header">
+                        <div class="card-icon view">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </div>
+                        <h3>View Workouts</h3>
+                        <button onclick="loadWorkouts()" id="loadBtn" class="btn-load">Load</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="workoutTable">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Duration</th>
+                                    <th>Calories</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workoutBody"></tbody>
+                        </table>
+                        <p id="noData" class="no-data">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            No workouts yet. Add your first workout!
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Adding...';
+            <!-- Message Toast -->
+            <div id="message" class="toast"></div>
+        </div>
+    </section>
 
-            const data = {
-                workout_type: document.getElementById("workoutType").value,
-                duration: document.getElementById('duration').value,
-                calories: document.getElementById('calories').value
-            };
+    <!-- Architecture Section -->
+    <section id="architecture" class="architecture-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Architecture</span>
+                <h2 class="section-title">3-Tier Cloud Design</h2>
+                <p class="section-subtitle">How the application components connect</p>
+            </div>
+            <div class="architecture-flow">
+                <div class="tier-box tier-1">
+                    <div class="tier-icon">🌐</div>
+                    <h4>Presentation</h4>
+                    <p>HTML/CSS/JS Frontend</p>
+                    <span class="tier-detail">Browser</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+                <div class="tier-box tier-2">
+                    <div class="tier-icon">⚙️</div>
+                    <h4>Application</h4>
+                    <p>Flask REST API</p>
+                    <span class="tier-detail">EC2</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+                <div class="tier-box tier-3">
+                    <div class="tier-icon">🗄️</div>
+                    <h4>Data</h4>
+                    <p>SQLite / RDS MySQL</p>
+                    <span class="tier-detail">Database</span>
+                </div>
+            </div>
+            <div class="tech-stack">
+                <span class="tech-badge">AWS</span>
+                <span class="tech-badge">Terraform</span>
+                <span class="tech-badge">Flask</span>
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">HTML5</span>
+                <span class="tech-badge">CSS3</span>
+            </div>
+        </div>
+    </section>
 
-            try {
-                const response = await fetch('http://' + apiIP + ':5000/api/workouts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    showMessage('Workout added successfully!', true);
-                    document.getElementById('workoutForm').reset();
-                    loadWorkouts();
-                } else {
-                    showMessage('Failed to add workout', false);
-                }
-            } catch (error) {
-                showMessage('Error connecting to backend. Make sure EC2 is running.', false);
-            }
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">🏋️</span>
+                    <span class="logo-text">FitTrack</span>
+                    <p>3-Tier Cloud Architecture Project</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#app">App</a>
+                    <a href="#architecture">Architecture</a>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 FitTrack. Built with AWS & Terraform.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-            btn.disabled = false;
-            btn.textContent = 'Add Workout';
-        }
-
-        async function loadWorkouts() {
-            const apiIP = getApiIP();
-            if (!apiIP) return;
-
-            const btn = document.getElementById('loadBtn');
-            btn.disabled = true;
-            btn.textContent = 'Loading...';
-
-            try {
-                const response = await fetch('http://' + apiIP + ':5000/api/workouts');
-                workouts = await response.json();
-                
-                const tbody = document.getElementById('workoutBody');
-                const table = document.getElementById('workoutTable');
-                const noData = document.getElementById('noData');
-                
-                tbody.innerHTML = '';
-                if (workouts.length > 0) {
-                    workouts.forEach(w => {
-                        const row = tbody.insertRow();
-                        row.insertCell(0).textContent = w.workout_type;
-                        row.insertCell(1).textContent = w.duration + ' min';
-                        row.insertCell(2).textContent = w.calories + ' kcal';
-                    });
-                    table.style.display = 'table';
-                    noData.style.display = 'none';
-                } else {
-                    table.style.display = 'none';
-                    noData.style.display = 'block';
-                }
-            } catch (error) {
-                showMessage('Error loading workouts. Make sure EC2 is running.', false);
-            }
-
-            btn.disabled = false;
-            btn.textContent = 'Load Workouts';
-        }
-
-        document.getElementById('workoutForm').addEventListener('submit', addWorkout);
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
